@@ -12,5 +12,7 @@ let content =
     let projectDir = Directory.GetParent(workingDir).Parent.Parent.FullName in
     let textFile = Path.Combine(projectDir, file) in
     File.ReadLines(textFile) |> List.ofSeq
+let stopWatch = System.Diagnostics.Stopwatch.StartNew()
 let result = run content
-Console.Out.WriteLine result
+stopWatch.Stop()
+printfn $"Elapsed %s{stopWatch.Elapsed.ToString()}\nResult: {result}"
