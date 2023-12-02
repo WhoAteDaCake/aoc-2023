@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/toshiba/open-source/aoc-2023/MyFSharpApp.fsproj": {}
+  },
+  "projects": {
+    "/home/toshiba/open-source/aoc-2023/MyFSharpApp.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/toshiba/open-source/aoc-2023/MyFSharpApp.fsproj",
+        "projectName": "MyFSharpApp",
+        "projectPath": "/home/toshiba/open-source/aoc-2023/MyFSharpApp.fsproj",
+        "packagesPath": "/home/toshiba/.nuget/packages/",
+        "outputPath": "/home/toshiba/open-source/aoc-2023/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/toshiba/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "/usr/share/dotnet/sdk/7.0.404/FSharp/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[7.0.402, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.404/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

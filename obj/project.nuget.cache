@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "vKyCu2I999Hktgg8961S8gTZ0oZlZP/d+Jhe21YM0+5Q73vZI8q2fuRhVpy+gNsXJ/AOYZbqMxuIvZ//s6rkFA==",
+  "success": true,
+  "projectFilePath": "/home/toshiba/open-source/aoc-2023/MyFSharpApp.fsproj",
+  "expectedPackageFiles": [
+    "/home/toshiba/.nuget/packages/fsharp.core/7.0.402/fsharp.core.7.0.402.nupkg.sha512"
+  ],
+  "logs": []
+}
