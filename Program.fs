@@ -2,12 +2,14 @@
 open System.IO
 open MyFSharpApp;
 
-let solver = Problem1.Solution() :> Solution.T
-let fullFile = Path.Combine 
+type Solver = (string * string list -> string)
+
+let (file, run) = Problem1.spec
+
 let content =
     let workingDir = Environment.CurrentDirectory in
     let projectDir = Directory.GetParent(workingDir).Parent.Parent.FullName in
-    let textFile = Path.Combine(projectDir, solver.file) in
+    let textFile = Path.Combine(projectDir, file) in
     File.ReadLines(textFile) |> List.ofSeq
-let result = solver.run content
+let result = run content
 Console.Out.WriteLine result

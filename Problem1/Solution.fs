@@ -12,12 +12,7 @@ let solve_row row =
     let parts = [for g in result.Groups -> g.Value] in
     String.Concat("", parts) |> Int32.Parse
     
-
-let run (ls: string list) =
-    ""
-    
-type Solution() =
-    interface Solution.T with
-        member this.file = "./Problem1/input_small.txt"
-        member this.run (ls:string list) =
-            "hello"
+let run (ls:string list) =
+   "hello"
+ 
+let spec = ("./Problem1/input_small.txt", run)
