@@ -44,7 +44,7 @@ let rec canPlay games (r: uint16, g: uint16, b: uint16) =
         | (r1, g2, b2)::xs -> canPlay xs (r1, g2, b2)
         | [] -> true
 
-let solveRow (row:string) =
+let solveRow1 (row:string) =
     let [gameIdStr; rest] = row.Split(":") |> List.ofSeq in
     let gameId = gameIdStr.Substring(gameIdSuffix) |> UInt16.Parse
     let pulls = parseGame rest
@@ -52,8 +52,23 @@ let solveRow (row:string) =
     | true -> gameId
     | false -> zero
 
+let rec findMax (r: uint16, g: uint16, b: uint16) games =
+    match games with
+    | (r1, g2, b2)::xs -> findMax (Math.Max(r, r1), Math.Max(g, g2), Math.Max(b, b2)) xs
+    | [] -> (r, g, b)
+
+
+let solveRow2 (row:string) =
+    let [_; rest] = row.Split(":") |> List.ofSeq in
+    let pulls = parseGame rest in
+    let r, g, b = findMax  (zero, zero, zero) pulls in
+    (int)r * (int)g * (int)b
+    // match canPlay pulls (zero, zero, zero) with
+    // | true -> gameId
+    // | false -> zero
+
 let run (ls:string list): string =
-    let result = List.fold (fun sum row -> sum + (solveRow row)) zero ls in
+    let result = List.fold (fun sum row -> sum + (int)(solveRow2 row)) 0 ls in
     result.ToString()
 
 let spec = ("./Problem2/input_large.txt", run)
