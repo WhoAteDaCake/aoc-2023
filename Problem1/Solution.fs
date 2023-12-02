@@ -22,7 +22,7 @@ let rec finder acc (row: char list) =
     | x::xs -> if Char.IsDigit x then finder ((Int32.Parse(x.ToString()))::acc) xs else finder acc xs
     | [] -> List.rev acc
 
-let solve_row row =
+let solveRow row =
     let numbers = finder [] (List.ofSeq row) in
     // let numRow = String.Join(",", Array.ofList numbers ) in
     // Reversed, since the finder prepends instead of push
@@ -32,7 +32,7 @@ let solve_row row =
     first * 10 + last
     
 let run (ls:string list): string =
-    let result = List.fold (fun sum row -> sum + (solve_row row)) 0 ls in
+    let result = List.fold (fun sum row -> sum + (solveRow row)) 0 ls in
     result.ToString()
 
 let spec = ("./Problem1/input_large.txt", run)
