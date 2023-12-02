@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Problem1\Solution.fs" />
     <Content Include="Problem1\input_small.txt" />
+    <Content Include="Problem1\input_large.txt" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
