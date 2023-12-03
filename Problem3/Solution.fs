@@ -21,7 +21,12 @@ let parser (row: string) =
 
     let rec loop (startPos: int) (curPos: int) (symbols: int list) (acc: char list) =
         if curPos = row.Length then
-            (arr, symbols)
+            match acc with
+            | [] -> (arr, symbols)
+            | digits ->
+                    let value = parseNumber 0 (List.rev digits) in
+                    let _ = fillArr startPos (curPos - 1) value in
+                    loop curPos curPos symbols []
         else
             match acc with
             | [] ->
