@@ -2,8 +2,6 @@ module MyFSharpApp.Problem3
 
 open System
 
-let isSymbol (c: char) = not ((Char.IsDigit c) || c = '.')
-
 let rec parseNumber (acc: int) (digits: char list) =
     match digits with
     | [] -> acc
@@ -32,9 +30,9 @@ let parser (row: string) =
             | [] ->
                 match row[curPos] with
                 | c when Char.IsDigit c -> loop curPos (curPos + 1) symbols (c :: acc)
-                | '.' -> loop curPos (curPos + 1) symbols []
+                | c when c = '.' || c <> '*' -> loop curPos (curPos + 1) symbols []
                 // Symbol here
-                | _ -> loop curPos (curPos + 1) (curPos :: symbols) []
+                | _ -> loop curPos (curPos + 1) (curPos:: symbols) []
             | digits ->
                 match row[curPos] with
                 | c when Char.IsDigit c -> loop startPos (curPos + 1) symbols (c :: acc)
@@ -73,15 +71,16 @@ let run (ls: string list) : string =
             (fun acc (y: int, x: int) ->
                 let coords = [ (y - 1, x); (y + 1, x); (y, x - 1); (y, x + 1); (y - 1, x - 1); (y - 1, x + 1); (y + 1, x - 1); (y + 1, x + 1) ] in
                 let points = List.map lookup coords in
-                acc @ points)
-            []
+                let uniques =
+                    List.fold (fun acc value ->
+                        match value with
+                        | None -> acc
+                        | Some (value, id) -> Map.add id value acc) (Map []) points in
+                match Map.values uniques |> List.ofSeq with
+                | f::[ s ] -> f * s + acc
+                | _ -> acc)
+            0
             symbols in
-    let uniques =
-        List.fold (fun acc value ->
-            match value with
-            | None -> acc
-            | Some (value, id) -> Map.add id value acc) (Map []) found in
-    let sum = Map.fold (fun acc _ value -> acc + value) 0 uniques in
-    sum.ToString()
+    found.ToString()
 
 let spec = ("./Problem3/input_large.txt", run)
