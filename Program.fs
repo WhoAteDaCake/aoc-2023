@@ -5,7 +5,7 @@ open MyFSharpApp;
 
 type Solver = (string * string list -> string)
 
-let (file, run) = Problem2.spec
+let (file, run) = Problem3.spec
 
 let content =
     let workingDir = Environment.CurrentDirectory in

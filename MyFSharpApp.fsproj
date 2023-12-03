@@ -12,6 +12,9 @@
     <Compile Include="Problem2\Solution.fs" />
     <Content Include="Problem2\input_small.txt" />
     <Content Include="Problem2\input_large.txt" />
+    <Compile Include="Problem3\Solution.fs" />
+    <Content Include="Problem3\input_small.txt" />
+    <Content Include="Problem3\input_large.txt" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
