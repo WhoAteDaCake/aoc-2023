@@ -3,6 +3,9 @@ module MyFSharpApp.Problem5
 open System
 open System.Text.RegularExpressions
 
+
+let one = (uint64)1
+
 let between s n e =
     s <= n & n <= e
     
@@ -38,7 +41,6 @@ let splitParts (ls: string list) =
     (seeds, lookups)
 
 let mapToRange (range: (uint64 * uint64 * uint64) list) (value: uint64)  =
-    let one = (uint64)1 in
     let found = List.tryFind (fun (_, s, l) -> between s value (s + l - one)) range in
     match found with
     | None -> value
@@ -49,6 +51,14 @@ let solve1 (ls: string list): string =
     let mapped = List.fold (fun values lookup -> List.map (mapToRange lookup) values) seeds lookups in
     (List.min mapped).ToString()
 
-let spec = ("./Problem5/input_large.txt", solve1)
+
+let solve2 (ls: string list): string =
+    let (seeds, lookups) = splitParts ls in
+    let ranges = List.chunkBySize 2 seeds in
+    let fullSeeds = List.fold (fun acc (range: uint64 list) -> [range[0]..(range[0] + range[1] - one)] @ acc ) [] ranges in
+    let mapped = List.fold (fun values lookup -> List.map (mapToRange lookup) values) fullSeeds lookups in
+    (List.min mapped).ToString()
+
+let spec = ("./Problem5/input_large.txt", solve2)
 
 
