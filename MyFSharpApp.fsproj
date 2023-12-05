@@ -7,17 +7,10 @@
 
   <ItemGroup>
     <Compile Include="Problem1\Solution.fs" />
-    <Content Include="Problem1\input_small.txt" />
-    <Content Include="Problem1\input_large.txt" />
     <Compile Include="Problem2\Solution.fs" />
-    <Content Include="Problem2\input_small.txt" />
-    <Content Include="Problem2\input_large.txt" />
     <Compile Include="Problem3\Solution.fs" />
-    <Content Include="Problem3\input_small.txt" />
-    <Content Include="Problem3\input_large.txt" />
     <Compile Include="Problem4\Solution.fs" />
-    <Content Include="Problem4\input_small.txt" />
-    <Content Include="Problem4\input_large.txt" />
+    <Compile Include="Problem5\Solution.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
