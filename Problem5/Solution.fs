@@ -3,8 +3,11 @@ module MyFSharpApp.Problem5
 open System
 open System.Text.RegularExpressions
 
+let between s n e =
+    s <= n & n <= e
+    
 let parseNums (str: string) =
-    Regex.Matches(str, "\d+") |> Seq.map (fun c -> Int32.Parse c.Value) |> List.ofSeq
+    Regex.Matches(str, "\d+") |> Seq.map (fun c -> UInt64.Parse c.Value) |> List.ofSeq
 
 let parseRow xs =
     let ([dest; source; len]) = xs in
@@ -31,21 +34,21 @@ let splitAllRows (rows: string list) =
 let splitParts (ls: string list) =
     let first::rest = ls in
     let seeds = parseNums first in
-    let [
-        seedToSoil
-        soilToFert
-        fertToWater
-        waterToLight
-        lightToTemp
-        tempToHumid
-        humidToLoc
-    ] = splitAllRows (List.tail rest)
-    ""
+    let lookups = splitAllRows (List.tail rest) in
+    (seeds, lookups)
+
+let mapToRange (range: (uint64 * uint64 * uint64) list) (value: uint64)  =
+    let one = (uint64)1 in
+    let found = List.tryFind (fun (_, s, l) -> between s value (s + l - one)) range in
+    match found with
+    | None -> value
+    | Some (d, s, _) -> value - s + d
 
 let solve1 (ls: string list): string =
-    let parts = splitParts ls in
-    ""
+    let (seeds, lookups) = splitParts ls in
+    let mapped = List.fold (fun values lookup -> List.map (mapToRange lookup) values) seeds lookups in
+    (List.min mapped).ToString()
 
-let spec = ("./Problem5/input_small.txt", solve1)
+let spec = ("./Problem5/input_large.txt", solve1)
 
 
