@@ -140,7 +140,7 @@ let solve2 (ls: string list): string =
     let (lowest, _) = List.minBy fst output in
     lowest.ToString()
 
-
+// Note solution1 is broken as I've modified parsing.
 let spec = ("input_large.txt", solve2)
 
 
