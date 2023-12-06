@@ -15,15 +15,15 @@ module List =
         in
         loop ls
 
-type mapping = (uint64 * uint64 * uint64) list
+type mapping = (int64 * int64 * int64) list
 
-let one = (uint64)1
+let one = (int64)1
 
 let between s n e =
     s <= n & n <= e
     
 let parseNums (str: string) =
-    Regex.Matches(str, "\d+") |> Seq.map (fun c -> UInt64.Parse c.Value) |> List.ofSeq
+    Regex.Matches(str, "\d+") |> Seq.map (fun c -> Int64.Parse c.Value) |> List.ofSeq
 
 let parseRow xs =
     let ([dest; source; len]) = xs in
@@ -56,7 +56,7 @@ let splitParts (ls: string list) =
     let lookups = splitAllRows (List.tail rest) in
     (seeds, lookups)
 
-let mapToRange (range: mapping) (value: uint64)  =
+let mapToRange (range: mapping) (value: int64)  =
     let found = List.tryFind (fun (_, s, e) -> between s value e) range in
     match found with
     | None -> value
@@ -68,25 +68,23 @@ let solve1 (ls: string list): string =
     (List.min mapped).ToString()
 
 
-let moveRange (offset: uint64) (negative: bool) ((s, e): uint64 * uint64)  =
-    if negative then
-        (s - offset, e - offset)
-    else
-        (s + offset, e + offset )
+let moveRange (offset: int64) ((s, e): int64 * int64)  =
+     (s + offset, e + offset )
 
 // 53 - 60 <- Mapping
 // 57 - 69 <-
 
-let overlap ((rS, rE): uint64 * uint64) ((o, s, e): uint64 * uint64 * uint64) =
+let overlap ((rS, rE): int64 * int64) ((o, s, e): int64 * int64 * int64) =
     // No overlap
     // [..range.] [...mapp.]
     // [..mapp...] [range]
     if s > rE || e < rS then
         None
     else
-        let offset, negative = (uint64)(Math.Abs(o - s)), o < s in
-        let move = moveRange offset negative in
+        let offset = o - s in
+        let move = moveRange offset in
         match rS < s, rE > e with
+        | true, true -> Some (move (rS, rE), [])
         // Range fits perfectly
         | false, false -> Some (move (rS, rE), [])
         //    [....] <- Range
@@ -105,9 +103,9 @@ let overlap ((rS, rE): uint64 * uint64) ((o, s, e): uint64 * uint64 * uint64) =
 // [0] = {Tuple<ulong, ulong>} (81, 94)
 // [1] = {Tuple<ulong, ulong>} (57, 69)
 
-let applyMappings (mapping: mapping) (ranges: (uint64 * uint64) list) =
+let applyMappings (mapping: mapping) (ranges: (int64 * int64) list) =
     let ranges = List.sortBy fst ranges in
-    let rec loop (ranges: (uint64 * uint64) list) (acc: (uint64 * uint64) list) =
+    let rec loop (ranges: (int64 * int64) list) (acc: (int64 * int64) list) =
         match ranges with
         | [] -> acc
         | r::rs ->
@@ -129,25 +127,20 @@ let rangesToString ranges =
     String.Join(", ", ls)
     
 let lookupToString lookups =
-    let ls = List.map (fun (o, s, e) -> $"({s} - {e}, {o})") lookups in
+    let ls = List.map (fun (o, s, e) -> $"({s} - {e}, {o - s})") lookups in
     String.Join(", ", ls)
 
 let solve2 (ls: string list): string =
     let (seeds, lookups) = splitParts ls in
     let ranges = seeds |> List.chunkBySize 2 |> List.map (fun range -> (range[0], (range[0] + range[1] - one))) in
-    let output = List.fold (fun acc lookup ->
-        let _ = Console.Out.WriteLine ((rangesToString acc) + "|" + lookupToString lookup) in
-        applyMappings lookup acc ) ranges lookups in
-    (List.min output).ToString()
-    // let test1 = applyMappings lookups[0] ranges in
-    // ""
-    // let fullSeeds = List.fold (fun acc (range: uint64 list) -> [range[0]..(range[0] + range[1] - one)] @ acc ) [] ranges in
-    // let mapped = List.fold (fun values lookup -> List.map (mapToRange lookup) values) fullSeeds lookups in
-    // (List.min mapped).ToString()
+    let output = List.fold (
+        fun acc lookup ->
+            let result =  applyMappings lookup acc in
+            result) ranges lookups in
+    let (lowest, _) = List.minBy fst output in
+    lowest.ToString()
 
-// [10 - 20]
-// [5 - 15] [16 - 30]
 
-let spec = ("input.txt", solve2)
+let spec = ("input_large.txt", solve2)
 
 
