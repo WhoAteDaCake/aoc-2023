@@ -3,6 +3,18 @@ module MyFSharpApp.Problem5
 open System
 open System.Text.RegularExpressions
 
+module List =
+    let mapFindFirst f ls =
+        let rec loop ls =
+            match ls with
+            | [] -> None
+            | x::xs ->
+                match f x with
+                | None -> loop xs
+                | Some a -> Some a
+        in
+        loop ls
+
 type mapping = (uint64 * uint64 * uint64) list
 
 let one = (uint64)1
@@ -56,28 +68,79 @@ let solve1 (ls: string list): string =
     (List.min mapped).ToString()
 
 
-let moveRange ((s, e): uint64 * uint64) (offset: uint64) (negative: bool) =
+let moveRange (offset: uint64) (negative: bool) ((s, e): uint64 * uint64)  =
     if negative then
         (s - offset, e - offset)
     else
         (s + offset, e + offset )
 
-let overlap ((o, s, e): uint64 * uint64 * uint64) ((rS, rE): uint64 * uint64) =
+// 53 - 60 <- Mapping
+// 57 - 69 <-
+
+let overlap ((rS, rE): uint64 * uint64) ((o, s, e): uint64 * uint64 * uint64) =
     // No overlap
+    // [..range.] [...mapp.]
+    // [..mapp...] [range]
     if s > rE || e < rS then
         None
     else
-        let offset, negative = (uint64)(Math.Abs(o - s)), o < s
+        let offset, negative = (uint64)(Math.Abs(o - s)), o < s in
+        let move = moveRange offset negative in
         match rS < s, rE > e with
         // Range fits perfectly
-        | false, false -> Some ((moveRange (rS, rE) offset negative), [])
-        //
+        | false, false -> Some (move (rS, rE), [])
+        //    [....] <- Range
+        // [...] <- Mapping
+        | false, true ->
+            // TODO: check if -1 here is needed
+            let leftover = (e + one, rE) in
+            Some (move (rS, e), [leftover])
+        // [...] <- Range
+        //    [...] <- Mapping
+        | true, false ->
+            // TODO: check if -1 here is needed
+            let leftover = (rS, rE - e) in
+            Some (move (s, rE), [leftover])
+
+// [0] = {Tuple<ulong, ulong>} (81, 94)
+// [1] = {Tuple<ulong, ulong>} (57, 69)
+
+let applyMappings (mapping: mapping) (ranges: (uint64 * uint64) list) =
+    let ranges = List.sortBy fst ranges in
+    let rec loop (ranges: (uint64 * uint64) list) (acc: (uint64 * uint64) list) =
+        match ranges with
+        | [] -> acc
+        | r::rs ->
+            match List.mapFindFirst (overlap r) mapping with
+            | None -> loop rs (r::acc)
+            | Some (nRange, leftovers) -> loop (leftovers @ rs) (nRange::acc)
+    in
+    loop ranges []
+
+// 79 - 92
+// 55 - 67
+
+// Ranges
+// 98 - 99
+// 50 - 97 
+
+let rangesToString ranges =
+    let ls = List.map (fun (s, e) -> $"({s} - {e})") ranges in
+    String.Join(", ", ls)
     
+let lookupToString lookups =
+    let ls = List.map (fun (o, s, e) -> $"({s} - {e}, {o})") lookups in
+    String.Join(", ", ls)
 
 let solve2 (ls: string list): string =
     let (seeds, lookups) = splitParts ls in
     let ranges = seeds |> List.chunkBySize 2 |> List.map (fun range -> (range[0], (range[0] + range[1] - one))) in
-    ""
+    let output = List.fold (fun acc lookup ->
+        let _ = Console.Out.WriteLine ((rangesToString acc) + "|" + lookupToString lookup) in
+        applyMappings lookup acc ) ranges lookups in
+    (List.min output).ToString()
+    // let test1 = applyMappings lookups[0] ranges in
+    // ""
     // let fullSeeds = List.fold (fun acc (range: uint64 list) -> [range[0]..(range[0] + range[1] - one)] @ acc ) [] ranges in
     // let mapped = List.fold (fun values lookup -> List.map (mapToRange lookup) values) fullSeeds lookups in
     // (List.min mapped).ToString()
